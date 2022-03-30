@@ -6,10 +6,8 @@ import { Second } from "../target/types/second";
 const { SystemProgram } = anchor.web3;
 
 describe("second", () => {
-  // Use a local provider.
-  const provider = anchor.Provider.local();
-
-  // Configure the client to use the local cluster.
+  // Use provider.
+  const provider = anchor.Provider.env();
   anchor.setProvider(provider);
 
   // The program to execute.
@@ -32,6 +30,22 @@ describe("second", () => {
     let data = await program.account.dataAccount.fetch(dataAccount.publicKey);
 
     expect(data.data.toNumber()).to.equal(123);
+
+
+    console.log("Your transaction signature", tx);
+  });
+
+  it("Data updated!", async () => {
+    // Add your test here.
+    const tx = await program.methods.update(new anchor.BN(321))
+      .accounts({
+        dataAccount: dataAccount.publicKey,
+      })
+      .rpc();
+
+    let data = await program.account.dataAccount.fetch(dataAccount.publicKey);
+
+    expect(data.data.toNumber()).to.equal(321);
 
 
     console.log("Your transaction signature", tx);
